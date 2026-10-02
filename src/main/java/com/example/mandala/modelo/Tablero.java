@@ -6,12 +6,57 @@ import java.util.ArrayList;
 public class Tablero {
     private int cantidad_colores;
     private ArrayList<ColorCelda> colores;
+    private List<Celda> celdas;
 
-    public Tablero(int cantidad_colores) {
+    public Tablero(int cantidad_colores, int cantidad_celdas) {
         this.cantidad_colores = cantidad_colores;
         this.colores = new ArrayList<>();
+
+        this.celdas = new ArrayList<>();
+        this.celdas.add(new Celda(1, true, null))
+
+        int idPadre = 1;
+        int hijos = 4;
+        for (int i = 2; i <= cantidad_celdas; i++) {
+            if (hijos == 0) {
+                hijos = 4;
+                idPadre++;
+            }
+
+            this.celdas.add(new Celda(i, false, idPadre))
+            hijos--;            
+        }
     }
 
+    public int getCantidadColores() {
+        return this.cantidad_colores;
+    }
+
+    public void setCantidadColores(int cantidad) {
+        this.cantidad_colores = cantidad;
+    }
+
+    public List<Celda> getHijas(Celda padre) {
+        List<Celda> cdas = new ArrayList<>();
+
+        for (Celda c: this.celdas) {
+            if (c.getPadre() == padre) {
+                cdas.add(c);
+            }
+        }
+
+        return cdas;
+    }
+
+    public Celda getCelda(int id) {
+        for (Celda c: this.celdas) {
+            if (c.getId() == id) {
+                return c;
+            }
+        }
+
+        return null;
+    }
 
     public ArrayList<ColorCelda> getColores() {
         return this.colores;

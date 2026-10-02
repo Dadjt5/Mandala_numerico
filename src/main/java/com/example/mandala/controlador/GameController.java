@@ -10,4 +10,9 @@ public class GameController {
     public String hello() {
         return "Mandala Game";
     }
+
+    @PostMapping("/click")
+    public Tablero click(@RequestParam int fila, @RequestParam int columna) {
+        return gameService.click(fila, columna);
+    }
 }

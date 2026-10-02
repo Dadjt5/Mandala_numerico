@@ -2,22 +2,35 @@ package com.example.mandala.modelo;
 
 
 public class Celda {
+    private int id;
     private int numero;
     private boolean inicial;
     private Celda padre;
 
-    public Celda(boolean inicial, Celda padre) {
+    public Celda(int id, boolean inicial, Celda padre) {
+        this.id = id;
         this.numero = 0;
         this.inicial = inicial;
         this.padre = padre;
     }
 
+    public int getId() {
+        return this.id;
+    }
+
     public int getNumero() {
-        return numero;
+        return this.numero;
     }
 
     public void setNumero(int numero) {
         this.numero = numero;
+    }
+
+    public void incrementar(int cantidad_colores) {
+        this.numero++;
+        if (this.numero == cantidad_colores) {
+            this.numero = 0;
+        }
     }
 
     public boolean esInicial() {
