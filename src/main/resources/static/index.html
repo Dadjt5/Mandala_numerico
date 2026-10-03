@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Mandala</title>
+
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <h1>Mandala</h1>
+
+    <label for="cantidad-colores">Colores:</label>
+    <select id="cantidad-colores">
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="5">5</option>
+    </select>
+
+    <label for="cantidad-celdas">Celdas:</label>
+    <input id="cantidad-celdas" type="number" value="10">
+
+    <button id="btn-nueva-partida">Nueva partida</button>
+    <div id="tablero"></div>
+
+    <script src="/game.js"></script>
+</body>
+</html>

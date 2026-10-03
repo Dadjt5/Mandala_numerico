@@ -5,12 +5,14 @@ public class Celda {
     private int id;
     private int numero;
     private boolean inicial;
+    private ColorCelda color;
     private Celda padre;
 
     public Celda(int id, boolean inicial, Celda padre) {
         this.id = id;
         this.numero = 0;
         this.inicial = inicial;
+        this.color = ColorCelda.BLANCO;
         this.padre = padre;
     }
 
@@ -26,11 +28,23 @@ public class Celda {
         this.numero = numero;
     }
 
-    public void incrementar(int cantidad_colores) {
+    public ColorCelda getColor() {
+        return this.color;
+    }
+
+    public void setColor(ColorCelda color) {
+        this.color = color;
+    }
+
+    public boolean incrementar(int cantidad_colores) {
         this.numero++;
+
         if (this.numero == cantidad_colores) {
             this.numero = 0;
+            return true;
         }
+
+        return false;
     }
 
     public boolean esInicial() {

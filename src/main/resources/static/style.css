@@ -1,0 +1,10 @@
+body {
+    font-family: sans-serif;
+    text-align: center;
+}
+
+#tablero {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
