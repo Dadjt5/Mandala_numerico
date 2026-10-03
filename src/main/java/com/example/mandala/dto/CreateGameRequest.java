@@ -1,3 +1,5 @@
+package com.example.mandala.dto;
+
 public class CreateGameRequest {
     private int cantidadColores;
     private int cantidadCeldas;

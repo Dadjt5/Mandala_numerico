@@ -1,3 +1,5 @@
+package com.example.mandala.dto;
+
 public class ClickRequest {
     private int celdaId;
 

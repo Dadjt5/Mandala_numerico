@@ -1,7 +1,7 @@
 package com.example.mandala.modelo;
 
 import java.util.ArrayList;
-
+import java.util.List;
 
 public class Tablero {
     private int cantidad_colores;
@@ -13,7 +13,7 @@ public class Tablero {
         this.colores = new ArrayList<>();
 
         this.celdas = new ArrayList<>();
-        this.celdas.add(new Celda(1, true, null))
+        this.celdas.add(new Celda(1, true, -1));
 
         int idPadre = 1;
         int hijos = 4;
@@ -23,8 +23,8 @@ public class Tablero {
                 idPadre++;
             }
 
-            this.celdas.add(new Celda(i, false, idPadre))
-            hijos--;            
+            this.celdas.add(new Celda(i, false, idPadre));
+            hijos--;
         }
     }
 
@@ -40,7 +40,7 @@ public class Tablero {
         List<Celda> cdas = new ArrayList<>();
 
         for (Celda c: this.celdas) {
-            if (c.getPadre() == padre) {
+            if (c.getPadre() == padre.getId()) {
                 cdas.add(c);
             }
         }

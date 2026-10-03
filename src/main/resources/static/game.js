@@ -4,7 +4,7 @@ document.getElementById("btn-nueva-partida").addEventListener("click", nuevaPart
 async function nuevaPartida() {
     const cantidadColores = document.getElementById("cantidad-colores").value;
     const cantidadCeldas = document.getElementById("cantidad-celdas").value;
-    
+
     const response = await fetch("/api/games/nueva", {
         method: "POST",
         headers: {"Content-Type": "application/json"},

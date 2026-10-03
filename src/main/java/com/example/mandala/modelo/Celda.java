@@ -6,9 +6,9 @@ public class Celda {
     private int numero;
     private boolean inicial;
     private ColorCelda color;
-    private Celda padre;
+    private int padre;
 
-    public Celda(int id, boolean inicial, Celda padre) {
+    public Celda(int id, boolean inicial, int padre) {
         this.id = id;
         this.numero = 0;
         this.inicial = inicial;
@@ -36,7 +36,7 @@ public class Celda {
         this.color = color;
     }
 
-    public boolean incrementar(int cantidad_colores) {
+    public boolean incrementarNumero(int cantidad_colores) {
         this.numero++;
 
         if (this.numero == cantidad_colores) {
@@ -55,11 +55,11 @@ public class Celda {
         this.inicial = ini;
     }
 
-    public Celda getPadre() {
+    public int getPadre() {
         return this.padre;
     }
 
-    public void setPadre(Celda padre) {
+    public void setPadre(int padre) {
         this.padre = padre;
     }
 }

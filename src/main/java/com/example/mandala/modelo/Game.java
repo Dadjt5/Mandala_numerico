@@ -10,7 +10,7 @@ public class Game {
         this.id = siguienteId;
         siguienteId++;
 
-        this.tablero = new Tablero(cantidad_colores, cantidad_celdas)
+        this.tablero = new Tablero(cantidad_colores, cantidad_celdas);
     }
 
     public int getId() {
