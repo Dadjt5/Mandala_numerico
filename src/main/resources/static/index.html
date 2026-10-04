@@ -6,25 +6,45 @@
 
     <title>Mandala</title>
 
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=Figtree:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/style.css">
 </head>
 
 <body>
+    <main class="juego">
+        <header class="cabecera">
+            <h1>Mandala</h1>
+            <p class="ayuda">Toca una celda para pintarla. Cuando se llena, se desborda hacia sus vecinas.</p>
+        </header>
 
-    <h1>Mandala</h1>
+        <div class="controles">
+            <div class="campo">
+                <label for="cantidad-colores">Colores</label>
+                <select id="cantidad-colores">
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </div>
 
-    <label for="cantidad-colores">Colores:</label>
-    <select id="cantidad-colores">
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-    </select>
+            <div class="campo">
+                <label for="cantidad-celdas">Celdas</label>
+                <input id="cantidad-celdas" type="number" value="10" min="3" max="60">
+            </div>
 
-    <label for="cantidad-celdas">Celdas:</label>
-    <input id="cantidad-celdas" type="number" value="10">
+            <button id="btn-nueva-partida" class="btn-principal">Nueva partida</button>
+        </div>
 
-    <button id="btn-nueva-partida">Nueva partida</button>
-    <div id="tablero"></div>
+        <p class="puntos" aria-live="polite"><span id="total">0</span> puntos</p>
+
+        <section class="escenario" aria-label="Tablero del mandala">
+            <div id="tablero" role="group"></div>
+        </section>
+
+        <p id="mensaje" class="mensaje" role="status"></p>
+    </main>
 
     <script src="/game.js"></script>
 </body>

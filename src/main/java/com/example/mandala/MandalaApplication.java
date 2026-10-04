@@ -9,5 +9,4 @@ public class MandalaApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(MandalaApplication.class, args);
 	}
-
 }

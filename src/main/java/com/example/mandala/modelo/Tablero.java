@@ -1,25 +1,29 @@
 package com.example.mandala.modelo;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class Tablero {
     private int cantidad_colores;
     private ArrayList<ColorCelda> colores;
-    private List<Celda> celdas;
+    private ArrayList<Celda> celdas;
 
     public Tablero(int cantidad_colores, int cantidad_celdas) {
         this.cantidad_colores = cantidad_colores;
-        this.colores = new ArrayList<>();
 
+        this.colores = new ArrayList<>();
+        this.colores.add(ColorCelda.BLANCO);
+        this.colores.add(ColorCelda.VERDE);
+        this.colores.add(ColorCelda.AZUL);
+        this.colores.add(ColorCelda.ROJO);
+ 
         this.celdas = new ArrayList<>();
         this.celdas.add(new Celda(1, true, -1));
 
         int idPadre = 1;
-        int hijos = 4;
+        int hijos = 4; // Rombo, solo el primero tiene 4 hijos
         for (int i = 2; i <= cantidad_celdas; i++) {
             if (hijos == 0) {
-                hijos = 4;
+                hijos = 3;
                 idPadre++;
             }
 
@@ -36,8 +40,16 @@ public class Tablero {
         this.cantidad_colores = cantidad;
     }
 
-    public List<Celda> getHijas(Celda padre) {
-        List<Celda> cdas = new ArrayList<>();
+    public ArrayList<Celda> getCeldas() {
+        return this.celdas;
+    }
+
+    public void setCeldas(ArrayList<Celda> celdas) {
+        this.celdas = celdas;
+    }
+
+    public ArrayList<Celda> getHijas(Celda padre) {
+        ArrayList<Celda> cdas = new ArrayList<>();
 
         for (Celda c: this.celdas) {
             if (c.getPadre() == padre.getId()) {
