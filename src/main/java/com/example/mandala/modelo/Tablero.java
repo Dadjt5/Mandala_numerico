@@ -1,11 +1,38 @@
 package com.example.mandala.modelo;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.lang.Math;
+
 
 public class Tablero {
     private int cantidad_colores;
     private ArrayList<ColorCelda> colores;
     private ArrayList<Celda> celdas;
+
+    private Posicion posicion(int i) {
+        if (i == 0) {
+            return new Posicion(0, 0);
+        }
+
+        int r = 1;
+        while (i > 2 * r * (r + 1)) {
+            r++;
+        }
+
+        int k = i - (2 * r * (r - 1) + 1);
+        int t = (k + 1) % (4 * r);
+        int lado = t / r;
+        int o = t % r;
+
+        return switch (lado) {
+            case 0 -> new Posicion(-r + o, -o);
+            case 1 -> new Posicion(o, -r + o);
+            case 2 -> new Posicion(r - o, o);
+            case 3 -> new Posicion(-o, r - o);
+            default -> throw new IllegalStateException();
+        };
+    }
 
     public Tablero(int cantidad_colores, int cantidad_celdas) {
         this.cantidad_colores = cantidad_colores;
@@ -17,18 +44,25 @@ public class Tablero {
         this.colores.add(ColorCelda.ROJO);
  
         this.celdas = new ArrayList<>();
-        this.celdas.add(new Celda(1, true, -1));
+        for (int i = 1; i <= cantidad_celdas; i++) {
+            Posicion posicion = posicion(i);
 
-        int idPadre = 1;
-        int hijos = 4; // Rombo, solo el primero tiene 4 hijos
-        for (int i = 2; i <= cantidad_celdas; i++) {
-            if (hijos == 0) {
-                hijos = 3;
-                idPadre++;
+            Celda celda;
+
+            if (i == 0) {
+                celda = new Celda(i, true, posicion.x(), posicion.y());
+            } else {
+                celda = new Celda(i, false, posicion.x(), posicion.y());
             }
 
-            this.celdas.add(new Celda(i, false, idPadre));
-            hijos--;
+            System.out.printf(
+            "Celda %d -> (%d, %d)%n",
+            celda.getId(),
+            celda.getPosicionX(),
+            celda.getPosicionY()
+            );
+
+            this.celdas.add(celda);
         }
     }
 
@@ -48,16 +82,33 @@ public class Tablero {
         this.celdas = celdas;
     }
 
-    public ArrayList<Celda> getHijas(Celda padre) {
-        ArrayList<Celda> cdas = new ArrayList<>();
+    public ArrayList<Celda> getHijas(Celda celda) {
+        ArrayList<Celda> hijas = new ArrayList<>();
 
-        for (Celda c: this.celdas) {
-            if (c.getPadre() == padre.getId()) {
-                cdas.add(c);
+        int x = celda.getPosicionX();
+        int y = celda.getPosicionY();
+
+        for (Celda c : this.celdas) {
+            if (esHija(celda, c)) {
+                hijas.add(c);
             }
         }
 
-        return cdas;
+        return hijas;
+    }
+
+    private boolean esHija(Celda padre, Celda posibleHija) {
+        int dx = posibleHija.getPosicionX() - padre.getPosicionX();
+        int dy = posibleHija.getPosicionY() - padre.getPosicionY();
+
+        if (Math.abs(dx)+Math.abs(dy) == 1) {
+            System.out.println("hija: (" + posibleHija.getPosicionX() + ", " + posibleHija.getPosicionY() + ")");
+            System.out.println("padre: (" + padre.getPosicionX() + ", " + padre.getPosicionY() + ")");
+            System.out.println("dx: " + dx + ", dy: " + dy + "\n");
+            return true;
+        }
+
+        return false;
     }
 
     public Celda getCelda(int id) {

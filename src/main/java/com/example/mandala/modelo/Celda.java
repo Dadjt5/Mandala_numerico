@@ -1,19 +1,23 @@
 package com.example.mandala.modelo;
 
+import java.util.ArrayList;
+
 
 public class Celda {
     private int id;
     private int numero;
     private boolean inicial;
     private ColorCelda color;
-    private int padre;
+    private int posicionX;
+    private int posicionY;
 
-    public Celda(int id, boolean inicial, int padre) {
+    public Celda(int id, boolean inicial, int x, int y) {
         this.id = id;
         this.numero = 0;
         this.inicial = inicial;
         this.color = ColorCelda.BLANCO;
-        this.padre = padre;
+        this.posicionX = x;
+        this.posicionY = y;
     }
 
     public int getId() {
@@ -55,11 +59,19 @@ public class Celda {
         this.inicial = ini;
     }
 
-    public int getPadre() {
-        return this.padre;
+    public int getPosicionX() {
+        return this.posicionX;
     }
 
-    public void setPadre(int padre) {
-        this.padre = padre;
+    public void setPosicionX(int x) {
+        this.posicionX = x;
+    }
+
+    public int getPosicionY() {
+        return this.posicionY;
+    }
+
+    public void setPosicionY(int y) {
+        this.posicionY = y;
     }
 }

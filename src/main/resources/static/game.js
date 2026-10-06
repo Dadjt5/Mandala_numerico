@@ -83,36 +83,59 @@ function animar(boton, clase) {
     boton.addEventListener("animationend", () => boton.classList.remove(clase), {once: true});
 }
 
-// Matriz en rombo con centro. Las celdas llegan en orden de anchura (BFS):
-//   0 = centro, luego sus 4 hijas (arriba, derecha, abajo, izquierda),
-//   luego las hijas de la primera hija, de la segunda, etc.
-// En la cuadricula, las celdas de las esquinas del rombo tienen DOS madres,
-// asi que cada anillo k tiene 4k celdas (1, 4, 8, 12...) y no se repiten.
-// Cada anillo se recorre en sentido horario empezando por la hija de arriba
-// de la primera madre: en el anillo k, la celda (-(k-1), -1).
-function posicion(i) {
-    if (i === 0) return {x: 0, y: 0};
 
-    let k = 1;
-    let j = i - 1;
-    while (j >= 4 * k) {
-        j -= 4 * k;
-        k++;
+function posicion(i) {
+    // Centro
+    if (i === 0) {
+        return { x: 0, y: 0 };
     }
 
-    // q = posicion en el anillo contando en sentido horario desde la celda de arriba (0, -k)
-    const q = (3 * k + 1 + j) % (4 * k);
-    const lado = Math.floor(q / k);
-    const t = q % k;
-    const [x, y] = [
-        [t, -k + t],
-        [k - t, t],
-        [-t, k - t],
-        [-k + t, -t]
-    ][lado];
+    // Primer anillo:
+    // 2 arriba → 3 derecha → 4 abajo → 5 izquierda
+    if (i <= 4) {
+        return [
+            { x: 0, y: -1 }, // 2
+            { x: 1, y: 0 },  // 3
+            { x: 0, y: 1 },  // 4
+            { x: -1, y: 0 }  // 5
+        ][i - 1];
+    }
 
-    return {x, y};
+    // A partir del segundo anillo, cada anillo empieza arriba-izquierda
+    // y continúa en sentido horario
+    let lado = 2;
+    let j = i - 5;
+
+    while (j >= 8 * lado) {
+        j -= 8 * lado;
+        lado++;
+    }
+
+    const puntos = [];
+
+    // Arriba: izquierda, derecha
+    for (let x = -lado; x <= lado; x++) {
+        puntos.push({ x, y: -lado });
+    }
+
+    // Derecha: arriba, abajo
+    for (let y = -lado + 1; y <= lado; y++) {
+        puntos.push({ x: lado, y });
+    }
+
+    // Abajo: derecha, izquierda
+    for (let x = lado - 1; x >= -lado; x--) {
+        puntos.push({ x, y: lado });
+    }
+
+    // Izquierda: abajo, arriba
+    for (let y = lado - 1; y > -lado; y--) {
+        puntos.push({ x: -lado, y });
+    }
+
+    return puntos[j];
 }
+
 
 function pintarTablero(tablero, reiniciar = false) {
     const elemento = document.getElementById("tablero");
