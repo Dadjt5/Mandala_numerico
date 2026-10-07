@@ -5,7 +5,6 @@ let numerosAnteriores = new Map();
 const PALETA = ["var(--c1)", "var(--c2)", "var(--c3)", "var(--c4)", "var(--c5)"];
 
 document.getElementById("btn-nueva-partida").addEventListener("click", nuevaPartida);
-nuevaPartida(); // arranca con una partida lista para jugar
 
 function mostrarMensaje(texto, esError = false) {
     const el = document.getElementById("mensaje");
@@ -56,7 +55,6 @@ async function clickCelda(celdaId) {
     }
 }
 
-// Nombres de color en español -> colores de la paleta del mandala
 const NOMBRES = {
     amarillo: "var(--c1)", naranja: "var(--c1)",
     rojo: "var(--c2)", coral: "var(--c2)", rosa: "var(--c2)",
@@ -65,8 +63,6 @@ const NOMBRES = {
     verde: "var(--c5)"
 };
 
-// El tablero trae `colores`: la posicion `numero` indica el color de esa celda.
-// El valor puede ser un color CSS (#hex, rgb, "red"), un nombre en español o un indice.
 function colorDe(celda, tablero) {
     const valor = tablero.colores ? tablero.colores[celda.numero] : undefined;
     if (valor === undefined || valor === null) return PALETA[celda.numero % PALETA.length];
@@ -85,57 +81,27 @@ function animar(boton, clase) {
 
 
 function posicion(i) {
-    // Centro
-    if (i === 0) {
-        return { x: 0, y: 0 };
+    if (i === 0) return {x: 0, y: 0};
+
+    let k = 1;
+    let j = i - 1;
+    while (j >= 4 * k) {
+        j -= 4 * k;
+        k++;
     }
 
-    // Primer anillo:
-    // 2 arriba → 3 derecha → 4 abajo → 5 izquierda
-    if (i <= 4) {
-        return [
-            { x: 0, y: -1 }, // 2
-            { x: 1, y: 0 },  // 3
-            { x: 0, y: 1 },  // 4
-            { x: -1, y: 0 }  // 5
-        ][i - 1];
-    }
+    const q = (3 * k + 1 + j) % (4 * k);
+    const lado = Math.floor(q / k);
+    const t = q % k;
+    const [x, y] = [
+        [t, -k + t],
+        [k - t, t],
+        [-t, k - t],
+        [-k + t, -t]
+    ][lado];
 
-    // A partir del segundo anillo, cada anillo empieza arriba-izquierda
-    // y continúa en sentido horario
-    let lado = 2;
-    let j = i - 5;
-
-    while (j >= 8 * lado) {
-        j -= 8 * lado;
-        lado++;
-    }
-
-    const puntos = [];
-
-    // Arriba: izquierda, derecha
-    for (let x = -lado; x <= lado; x++) {
-        puntos.push({ x, y: -lado });
-    }
-
-    // Derecha: arriba, abajo
-    for (let y = -lado + 1; y <= lado; y++) {
-        puntos.push({ x: lado, y });
-    }
-
-    // Abajo: derecha, izquierda
-    for (let x = lado - 1; x >= -lado; x--) {
-        puntos.push({ x, y: lado });
-    }
-
-    // Izquierda: abajo, arriba
-    for (let y = lado - 1; y > -lado; y--) {
-        puntos.push({ x: -lado, y });
-    }
-
-    return puntos[j];
+    return {x, y};
 }
-
 
 function pintarTablero(tablero, reiniciar = false) {
     const elemento = document.getElementById("tablero");
@@ -172,6 +138,7 @@ function pintarTablero(tablero, reiniciar = false) {
         boton.style.setProperty("--tam", tam);
         boton.style.setProperty("--color", colorDe(celda, tablero));
         boton.textContent = celda.numero;
+        boton.dataset.valor = celda.numero; // permite estilar las celdas vacías en CSS
 
         if (antes !== undefined && celda.numero !== antes) {
             animar(boton, celda.numero > antes ? "sube" : "desborda");
@@ -183,3 +150,68 @@ function pintarTablero(tablero, reiniciar = false) {
 
     document.getElementById("total").textContent = total;
 }
+
+
+/* ================= Paleta de colores (solo visual) ================= */
+
+const PRESETS = {
+    neon:   ['#ff007f', '#00f0ff', '#7000ff', '#00ff66', '#ffb700'],
+    zen:    ['#78909c', '#a1887f', '#81c784', '#e0e0e0', '#d4e157'],
+    sunset: ['#ff4e50', '#fc913a', '#f9d423', '#ede580', '#e1f5fe'],
+    pastel: ['#ffb3ba', '#bae1ff', '#baffc9', '#ffffba', '#e8baff'],
+    cosmic: ['#8a2be2', '#4b0082', '#00ffff', '#ff1493', '#4169e1']
+};
+
+const selectColores = document.getElementById("cantidad-colores");
+const selectPreset = document.getElementById("preset-paletas");
+const contenedorPaleta = document.getElementById("contenedor-paleta");
+const coloresActuales = [...PRESETS.neon];
+
+function aplicarColores() {
+    coloresActuales.forEach((c, i) => document.documentElement.style.setProperty(`--c${i + 2}`, c));
+}
+
+function renderSelectoresColor() {
+    const cantidad = Number(selectColores.value);
+    contenedorPaleta.innerHTML = "";
+
+    for (let i = 0; i < cantidad-1; i++) {
+        const caja = document.createElement("div");
+        caja.className = "selector-color";
+        caja.style.backgroundColor = coloresActuales[i];
+
+        const input = document.createElement("input");
+        input.type = "color";
+        input.value = coloresActuales[i];
+        input.title = `Elegir color ${i + 1}`;
+        input.setAttribute("aria-label", `Color ${i + 1}`);
+        input.addEventListener("input", e => {
+            coloresActuales[i] = e.target.value;
+            caja.style.backgroundColor = e.target.value;
+            selectPreset.value = "custom";
+            aplicarColores();
+        });
+
+        caja.appendChild(input);
+        contenedorPaleta.appendChild(caja);
+    }
+}
+
+selectPreset.addEventListener("change", e => {
+    const preset = PRESETS[e.target.value];
+    if (!preset) return;
+    coloresActuales.splice(0, 5, ...preset);
+    aplicarColores();
+    renderSelectoresColor();
+});
+
+selectColores.addEventListener("change", () => {
+    renderSelectoresColor();
+    nuevaPartida();
+});
+
+document.getElementById("cantidad-celdas").addEventListener("change", nuevaPartida);
+
+aplicarColores();
+renderSelectoresColor();
+nuevaPartida();

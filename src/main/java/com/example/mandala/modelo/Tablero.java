@@ -7,41 +7,52 @@ import java.lang.Math;
 
 public class Tablero {
     private int cantidad_colores;
-    private ArrayList<ColorCelda> colores;
     private ArrayList<Celda> celdas;
 
-    private Posicion posicion(int i) {
-        if (i == 0) {
+    private Posicion posicion(int id) {
+        if (id <= 1) {
             return new Posicion(0, 0);
         }
 
-        int r = 1;
-        while (i > 2 * r * (r + 1)) {
-            r++;
+        // 1. Calcular en qué capa (L) se encuentra el ID
+        int L = (int) Math.ceil((-1.0 + Math.sqrt(2.0 * id - 1.0)) / 2.0);
+
+        // 2. Encontrar el ID donde comienza esta capa y el offset
+        int idInicio = 2 * (L - 1) * (L - 1) + 2 * (L - 1) + 2;
+        int offset = id - idInicio;
+
+        // 3. Determinar el lado del rombo (0 a 3) y el índice dentro de ese lado (i)
+        int lado = offset / L;
+        int i = offset % L;
+
+        int x = 0;
+        int y = 0;
+
+        // 4. Calcular coordenadas según el cuadrante / lado del diamante
+        switch (lado) {
+            case 0: // Lado Superior-Derecho (Sube hacia la derecha)
+                x = -L + 1 + i;
+                y = 1 + i;
+                break;
+            case 1: // Lado Inferior-Derecho (Baja hacia la derecha)
+                x = 1 + i;
+                y = L - 1 - i;
+                break;
+            case 2: // Lado Inferior-Izquierdo (Baja hacia la izquierda)
+                x = L - 1 - i;
+                y = -1 - i;
+                break;
+            case 3: // Lado Superior-Izquierdo (Sube hacia la izquierda)
+                x = -1 - i;
+                y = -(L - 1) + i;
+                break;
         }
 
-        int k = i - (2 * r * (r - 1) + 1);
-        int t = (k + 1) % (4 * r);
-        int lado = t / r;
-        int o = t % r;
-
-        return switch (lado) {
-            case 0 -> new Posicion(-r + o, -o);
-            case 1 -> new Posicion(o, -r + o);
-            case 2 -> new Posicion(r - o, o);
-            case 3 -> new Posicion(-o, r - o);
-            default -> throw new IllegalStateException();
-        };
+        return new Posicion(x, y);
     }
 
     public Tablero(int cantidad_colores, int cantidad_celdas) {
         this.cantidad_colores = cantidad_colores;
-
-        this.colores = new ArrayList<>();
-        this.colores.add(ColorCelda.BLANCO);
-        this.colores.add(ColorCelda.VERDE);
-        this.colores.add(ColorCelda.AZUL);
-        this.colores.add(ColorCelda.ROJO);
  
         this.celdas = new ArrayList<>();
         for (int i = 1; i <= cantidad_celdas; i++) {
@@ -49,18 +60,12 @@ public class Tablero {
 
             Celda celda;
 
-            if (i == 0) {
+            if (i == 1) {
                 celda = new Celda(i, true, posicion.x(), posicion.y());
             } else {
                 celda = new Celda(i, false, posicion.x(), posicion.y());
             }
 
-            System.out.printf(
-            "Celda %d -> (%d, %d)%n",
-            celda.getId(),
-            celda.getPosicionX(),
-            celda.getPosicionY()
-            );
 
             this.celdas.add(celda);
         }
@@ -101,10 +106,7 @@ public class Tablero {
         int dx = posibleHija.getPosicionX() - padre.getPosicionX();
         int dy = posibleHija.getPosicionY() - padre.getPosicionY();
 
-        if (Math.abs(dx)+Math.abs(dy) == 1) {
-            System.out.println("hija: (" + posibleHija.getPosicionX() + ", " + posibleHija.getPosicionY() + ")");
-            System.out.println("padre: (" + padre.getPosicionX() + ", " + padre.getPosicionY() + ")");
-            System.out.println("dx: " + dx + ", dy: " + dy + "\n");
+        if (Math.abs(dx)+Math.abs(dy) == 1 && padre.getId() < posibleHija.getId()) {
             return true;
         }
 
@@ -119,39 +121,5 @@ public class Tablero {
         }
 
         return null;
-    }
-
-    public ArrayList<ColorCelda> getColores() {
-        return this.colores;
-    }
-
-    public void setColores(ArrayList<ColorCelda> colores) {
-        this.colores = colores;
-    }
-
-    public boolean nuevoColor(ColorCelda color) {
-        if(this.colores.size() >= this.cantidad_colores) {
-            return false;
-        }
-
-        this.colores.add(color);
-        return true;
-    }
-
-    public boolean eliminarColor(ColorCelda color) {
-        if(this.colores.isEmpty()) {
-            return false;
-        }
-
-        this.colores.remove(color);
-        return true;
-    }
-
-    public ColorCelda getColor(int i) {
-        if(this.colores.size() <= i || i < 0) {
-            return null;
-        }
-
-        return this.colores.get(i);
     }
 }

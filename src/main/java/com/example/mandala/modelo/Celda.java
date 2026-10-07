@@ -7,7 +7,6 @@ public class Celda {
     private int id;
     private int numero;
     private boolean inicial;
-    private ColorCelda color;
     private int posicionX;
     private int posicionY;
 
@@ -15,7 +14,6 @@ public class Celda {
         this.id = id;
         this.numero = 0;
         this.inicial = inicial;
-        this.color = ColorCelda.BLANCO;
         this.posicionX = x;
         this.posicionY = y;
     }
@@ -30,14 +28,6 @@ public class Celda {
 
     public void setNumero(int numero) {
         this.numero = numero;
-    }
-
-    public ColorCelda getColor() {
-        return this.color;
-    }
-
-    public void setColor(ColorCelda color) {
-        this.color = color;
     }
 
     public boolean incrementarNumero(int cantidad_colores) {
